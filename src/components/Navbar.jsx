@@ -20,15 +20,15 @@ function Navbar(){
     }
     return (
     <>
-          <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <ul class="navbar-nav">
-                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+          <nav className="main-header navbar navbar-expand navbar-white navbar-light">
+            <ul className="navbar-nav">
+                <a className="nav-link" data-widget="pushmenu" href="#" role="button"><i className="fas fa-bars"></i></a>
             </ul>
 
 
-            <ul class="navbar-nav ml-auto">
+            <ul className="navbar-nav ml-auto">
 
-            <li class="nav-item">
+            <li className="nav-item">
 
                 <button onClick={logout} className="btn-danger">
                     Log Out
