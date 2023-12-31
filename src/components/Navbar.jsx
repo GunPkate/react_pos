@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 function Navbar(){
@@ -13,9 +13,10 @@ function Navbar(){
             cancelButtonText: 'Cancel',
             confirmButtonText: 'Yes'
         }).then(res => {
-            if(res.isConfirmed)
-            localStorage.removeItem('token');
-            navigate('/')
+            if(res.isConfirmed){
+                localStorage.removeItem('token');
+                navigate('/')
+            }
         })
     }
     return (
@@ -29,6 +30,12 @@ function Navbar(){
             <ul className="navbar-nav ml-auto">
 
             <li className="nav-item">
+                <Link  to='/changeProfile'  className="btn-secondary">
+                    Change Profile
+                    &nbsp;
+                    <i className="fa fa-user"></i>
+                </Link>
+                &nbsp;
 
                 <button onClick={logout} className="btn-danger">
                     Log Out

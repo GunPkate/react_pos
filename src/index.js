@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './pages/Home';
+import UserProfile from './pages/userProfile';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -16,6 +17,9 @@ const router = createBrowserRouter([
 },{
   path: "/home",
   element: <Home/>
+},{
+  path: "/changeProfile",
+  element: <UserProfile/>
 }
 ]) 
 root.render(
