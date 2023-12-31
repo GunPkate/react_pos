@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import Config from "../config";
 
 function Login(){
     const [userName,setUser] = useState('');
@@ -11,7 +12,7 @@ function Login(){
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("https://localhost:7106/api/User/Login",{usr:userName,pwd:password}).then(res=>{
+            await axios.post(Config.api+"/api/User/Login",{usr:userName,pwd:password}).then(res=>{
             if(res.data.message === 'Token Success'){
                     localStorage.setItem('token',res.data.token)
                     navigate('/home');
