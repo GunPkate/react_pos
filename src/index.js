@@ -5,12 +5,19 @@ import Login from './pages/Login';
 import reportWebVitals from './reportWebVitals';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Home from './pages/Home';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const router = createBrowserRouter([{
+const router = createBrowserRouter([
+{
   path: "/",
   element: <Login/>
-}]) 
+},{
+  path: "/home",
+  element: <Home/>
+}
+]) 
 root.render(
   <React.StrictMode>
     <RouterProvider router={router}/>

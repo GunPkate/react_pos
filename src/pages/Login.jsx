@@ -1,17 +1,20 @@
 import axios from "axios";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 function Login(){
     const [userName,setUser] = useState('');
     const [password,setPassword] = useState('');
+    const navigate = useNavigate();
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+        e.preventDefault();
         try {
-
             await axios.post("https://localhost:7106/api/User/Login",{usr:userName,pwd:password}).then(res=>{
-                if(res.data.message === 'success'){
+            if(res.data.message === 'Token Success'){
                     localStorage.setItem('token',res.data.token)
+                    navigate('/home');
                 }
             }).catch(err =>{
                 throw err.response.data;
