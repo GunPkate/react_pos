@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './pages/Home';
+import Product from './pages/Product';
 import UserProfile from './pages/userProfile';
 
 
@@ -20,6 +21,9 @@ const router = createBrowserRouter([
 },{
   path: "/changeProfile",
   element: <UserProfile/>
+},{
+  path: "/product",
+  element: <Product/>
 }
 ]) 
 root.render(

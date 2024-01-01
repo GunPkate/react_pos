@@ -30,11 +30,13 @@ function Navbar(){
             <ul className="navbar-nav ml-auto">
 
             <li className="nav-item">
-                <Link  to='/changeProfile'  className="btn-secondary">
-                    Change Profile
-                    &nbsp;
-                    <i className="fa fa-user"></i>
-                </Link>
+                <button className="btn-secondary">
+                    <Link  to='/changeProfile' className="text-white">
+                        Change Profile
+                        &nbsp;
+                        <i className="fa fa-user"></i>
+                    </Link>
+                </button>
                 &nbsp;
 
                 <button onClick={logout} className="btn-danger">
