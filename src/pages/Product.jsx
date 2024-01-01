@@ -34,7 +34,9 @@ function Product(){
         e.preventDefault();
         try {
             await axios.post(Config.api+'/api/Book/Create', book, Config.headers).then(res=>{
-
+                if(res.data){   
+                    fetchData();
+                }
             }).catch(err =>{
                 throw err.response.data;
             })
@@ -115,7 +117,7 @@ function Product(){
                 <input onChange={e => setBoook({...book,price: e.target.value})}  className="form-control" type="text" />
             </div>
             <div className="mt-2">
-                <button onClick={e => handleSave} className="btn-primary">
+                <button onClick={handleSave} className="btn-primary">
                     <i className="fa fa-check"></i>
                     &nbsp;
                     Save
