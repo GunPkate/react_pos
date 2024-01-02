@@ -64,12 +64,54 @@ function Product(){
             })
         }
     }
+
+    const handleDelete = (item) => {
+        Swal.fire({
+            title: 'Delete Book?',
+            text: 'Confirm Delete?',
+            icon: 'question',
+            showCancelButton: true,
+            showConfirmButton: true
+        }).then(async res=>{
+            if(res.isConfirmed){
+            console.log("Delete",item)
+                try {
+                    await axios.delete(Config.api+'/api/Book/DeleteBook?id='+item.id,Config.headers).then(res=>{
+                        if(res.data.message === 'success'){
+                            fetchData();
+                        }
+                    }).catch(err=>{
+                        throw err.response.data   
+                    })
+                } catch (e) {
+                    Swal.fire({
+                        title: 'error',
+                        text: e.message,
+                        icon: 'error'
+                    })
+                }
+            }
+        })
+
+    } 
+
+    const handleNewData =  () =>{
+        setBoook(
+            {
+                id:'',
+                isbn:'',
+                name:'',
+                price:''
+            }
+            )
+    }
+
     return (<>
         <Template>
             <div className="card">
                 <div className="h5 p-3">Book</div>
                 <div className="card-body">
-                    <button className="btn-info" data-target='#modalForm' data-toggle='modal' onClick={e=>setBoook({})}>
+                    <button className="btn-info" data-target='#modalForm' data-toggle='modal' onClick={handleNewData}>
                         <i className="fa fa-plus">Add Item</i>
                     </button>
                 </div>
@@ -101,7 +143,7 @@ function Product(){
                                     {/* Delete */}
                                     <i className="fa fa-file"></i>
                                 </button>
-                                <button className="btn-danger mr-2">
+                                <button className="btn-danger mr-2 " onClick={e => handleDelete(item)}>
                                     {/* Delete */}
                                     <i className="fa fa-times"></i>
                                 </button>
