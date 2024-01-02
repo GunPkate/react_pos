@@ -33,13 +33,26 @@ function Product(){
     const handleSave = async(e)=>{
         e.preventDefault();
         try {
-            await axios.post(Config.api+'/api/Book/Create', book, Config.headers).then(res=>{
-                if(res.data){   
-                    fetchData();
-                }
-            }).catch(err =>{
-                throw err.response.data;
-            })
+            if(book.id == null){
+
+                await axios.post(Config.api+'/api/Book/Create', book, Config.headers).then(res=>{
+                    if(res.data){   
+                        fetchData();
+                    }
+                }).catch(err =>{
+                    throw err.response.data;
+                })
+            }else{
+                console.log('Update')
+                console.log(book)
+                await axios.post(Config.api+'/api/Book/Edit',book,Config.headers).then(res=>{
+                    if(res.data){
+                        fetchData();
+                    }
+                }).catch(err =>{
+                    throw err.response.data;
+                })
+            }
         }
         catch (e) {
             Swal.fire({
@@ -54,7 +67,7 @@ function Product(){
             <div className="card">
                 <div className="h5 p-3">Book</div>
                 <div className="card-body">
-                    <button className="btn-info" data-target='#modalForm' data-toggle='modal'>
+                    <button className="btn-info" data-target='#modalForm' data-toggle='modal' onClick={e=>setBoook({})}>
                         <i className="fa fa-plus">Add Item</i>
                     </button>
                 </div>
@@ -78,7 +91,7 @@ function Product(){
                             <td>{item.name}</td>
                             <td className="text-right">{item.price}</td>
                             <td>
-                                <button className="btn-warning mr-2">
+                                <button data-toggle="modal" data-target="#modalForm" className="btn-warning mr-2" onClick={e=>setBoook(item)}>
                                     {/* Edit */}
                                     <i className="fa fa-pencil "></i>
                                 </button>
@@ -106,15 +119,18 @@ function Product(){
         <Modal id = "modalForm" title="Book Profile">
             <div>
                 <label >ISBN</label>
-                <input onChange={e => setBoook({...book,isbn: e.target.value})}  className="form-control" type="text" />
+                <input value={book.isbn} 
+                onChange={e => setBoook({...book,isbn: e.target.value})}  className="form-control" type="text" />
             </div>
             <div className="mt-2">
                 <label >Name</label>
-                <input onChange={e => setBoook({...book,name: e.target.value})}  className="form-control" type="text" />
+                <input value={book.name} 
+                onChange={e => setBoook({...book,name: e.target.value})}  className="form-control" type="text" />
             </div>
             <div className="mt-2">
                 <label >Price</label>
-                <input onChange={e => setBoook({...book,price: e.target.value})}  className="form-control" type="text" />
+                <input value={book.price} 
+                onChange={e => setBoook({...book,price: e.target.value})}  className="form-control" type="text" />
             </div>
             <div className="mt-2">
                 <button onClick={handleSave} className="btn-primary">
