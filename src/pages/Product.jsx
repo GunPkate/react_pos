@@ -38,6 +38,7 @@ function Product(){
                 await axios.post(Config.api+'/api/Book/Create', book, Config.headers).then(res=>{
                     if(res.data){   
                         fetchData();
+                        document.getElementById('btnClose').click();
                     }
                 }).catch(err =>{
                     throw err.response.data;
@@ -48,6 +49,7 @@ function Product(){
                 await axios.post(Config.api+'/api/Book/Edit',book,Config.headers).then(res=>{
                     if(res.data){
                         fetchData();
+                        document.getElementById('btnClose').click();
                     }
                 }).catch(err =>{
                     throw err.response.data;
