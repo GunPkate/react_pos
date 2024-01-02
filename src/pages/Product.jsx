@@ -139,7 +139,7 @@ function Product(){
                                     {/* Edit */}
                                     <i className="fa fa-pencil "></i>
                                 </button>
-                                <button className="btn-success mr-2">
+                                <button data-toggle="modal" data-target="#modalInfo" className="btn-success mr-2" onClick={e=>setBoook(item)}>
                                     {/* Delete */}
                                     <i className="fa fa-file"></i>
                                 </button>
@@ -184,6 +184,22 @@ function Product(){
                 </button>
             </div>
 
+        </Modal>
+
+        <Modal id = "modalInfo" title="Book Profile">
+            <div>
+                <label >ISBN</label>
+                <span> &nbsp; {book.isbn} </span>
+            </div>
+            <div className="mt-2">
+                <label >Name</label>
+                <span> &nbsp; {book.name} </span> 
+
+            </div>
+            <div className="mt-2">
+                <label >Price</label>
+                <span> &nbsp; {book.price} </span>
+            </div>
         </Modal>
     </>)
 }
