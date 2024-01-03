@@ -83,6 +83,14 @@ function Sidebar(){
               </p>
             </Link>
           </li>
+          <li className="nav-item">
+            <Link to="/sale" className="nav-link">
+              <i className="nav-icon fa fa-dollar"></i>
+              <p>
+                Sale
+              </p>
+            </Link>
+          </li>
          
         </ul>
       </nav>

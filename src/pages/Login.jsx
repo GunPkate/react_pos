@@ -32,7 +32,7 @@ function Login(){
     return (
     <>
  
-        <div className="login-box">
+        <div className="login-box container mt-5">
         <div className="login-logo">
             <b>.NET</b><span> POS Point of Sale</span>
         </div>
