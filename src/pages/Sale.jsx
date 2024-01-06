@@ -10,6 +10,7 @@ function Sale () {
     const [saleDetail,setSaleDetail] = useState({})
     const [barCode,setBarCode] = useState(1);
     const [totalPrice,setTotalPrice] = useState(0);
+    const [billSaleId,setBillSaleId] = useState(0);
 
     useEffect(()=>{ fetchLastSale() },[])
     
@@ -19,6 +20,7 @@ function Sale () {
                 // console.log(res)
                 if(res.data.billSaleId != 0){
                     fetchData(res.data.billSaleId);
+                    setBillSaleId(res.data.billSaleId);
                 }
             }).catch(err=>{
                 throw err.response.data
@@ -55,6 +57,7 @@ function Sale () {
         }
     }
 
+    // Add item to Sale  
     const handleSale = (e)=>{
         try {
             console.group(barCode)
@@ -82,6 +85,23 @@ function Sale () {
     }
 
     const handleDelete = (item) =>{
+        Swal.fire({
+            title: 'confirm delete?',
+            text: 'delete this item?',
+            icon: 'question',
+            showConfirmButton: true,
+            showCancelButton: true
+        }).then(async  res=>{
+            if( res.isConfirmed){
+                await axios.delete(Config.api+'/api/Sale/DeleteSale/'+item.id,Config.headers).then(res=>{
+                    if(res.data.message === 'success'){
+                        fetchData(billSaleId);
+                    }
+                })   
+            }
+        }).catch(err =>{
+            throw err.response.data
+        })
         console.log(item)
     }
     return (<>
