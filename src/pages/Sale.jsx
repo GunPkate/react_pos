@@ -39,8 +39,8 @@ function Sale () {
         try {
             await  axios.get(Config.api+"/api/Sale/SaleDetail/"+billSaleid,Config.headers).then(res=>{
                 const data = res.data.result
+                    handlePrice(data);
                     setSaleDetails(data)
-                    handlePrice();
                     console.log('set',saleDetails)
 
 
@@ -77,9 +77,10 @@ function Sale () {
         }
     }
 
-    const handlePrice = () =>{
+    const handlePrice = (data) =>{
         let sum = 0;
-        saleDetails.map(item=> sum += item.price* item.amount );
+        console.log('lag 01',saleDetails)
+        data.map(item=> sum += item.price* item.amount );
         console.log('sum',sum);
         setTotalPrice(sum);
     }
@@ -143,9 +144,9 @@ function Sale () {
                                     <td >{item.id}</td>
                                     <td>{item.isbn}</td>
                                     <td>{item.name}</td>
-                                    <td>{item.price}</td>
+                                    <td>{item.price.toLocaleString('th-TH')}</td>
                                     <td>{item.amount}</td>
-                                    <td>{item.price * item.amount}</td>
+                                    <td>{(item.price * item.amount).toLocaleString('th-TH')}</td>
                                     <td>
                                         <button data-toggle="modal" data-target="#modalForm" className="btn-warning mr-2" onClick={e=>saleDetail(item)}>
                                             {/* Edit */}
