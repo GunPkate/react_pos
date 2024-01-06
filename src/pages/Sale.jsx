@@ -6,15 +6,38 @@ import Swal from "sweetalert2";
 
 
 function Sale () {
-
-
     const [saleDetails,setSaleDetail] = useState([]);
     const [billSaleid,setBillSaleid] = useState(1);
+    const [barCode,setBarCode] = useState(1);
 
-    useEffect(()=>{fetchData()},[])
-    const fetchData = () =>{
+    useEffect(()=>{
+        fetchData();
+        fetchLastSale();
+    },[])
+    
+    const fetchLastSale = async () =>{
         try {
-            axios.get(Config.api+"/api/Sale/SaleDetail/"+billSaleid,Config.headers).then(res=>{
+            await axios.get(Config.api+"/api/Sale/LastSale/",Config.headers).then(res=>{
+                console.log(res)
+                if(res.status == '200'){
+                    // setSaleDetail(res.data)
+                }
+            }).catch(err=>{
+                throw err.response.data
+            })
+            
+        } catch (error) {
+            Swal.fire({
+                title: 'error',
+                text: error.message,
+                icon: 'error'
+            })
+        }
+    }
+
+    const fetchData = async() =>{
+        try {
+            await  axios.get(Config.api+"/api/Sale/SaleDetail/"+billSaleid,Config.headers).then(res=>{
                 if(res.status == '200'){
                     setSaleDetail(res.data)
                     console.log('set',saleDetails)
@@ -32,9 +55,15 @@ function Sale () {
         }
     }
 
-    const handleSale = ()=>{
+    const handleSale = (e)=>{
+        e.preventDefault();
         try {
-            
+            axios.post(Config.api+"/api/Sale/Sale?barcode="+barCode,Config.headers).then(res=>{
+                if(res.data){
+                    console.log(res.data)
+                    setBillSaleid(res.data.billSaleId)
+                }
+            })
         } catch (error) {
             Swal.fire({
                 title: 'error',
@@ -58,7 +87,7 @@ function Sale () {
                     <div className="input-group mt-4">
                         <span className="input-group-text">Barcode</span>
                         <input type="text" className="form-control" />
-                        <button className="btn btn-primary">
+                        <button className="btn btn-primary" onClick={handleSale}>
                             <i className="fa fa-save"></i>
                         </button>
                     </div>
