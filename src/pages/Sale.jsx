@@ -53,10 +53,10 @@ function Sale () {
     }
 
     const handleSale = (e)=>{
-        e.preventDefault();
         try {
-            let barCode = 0
+            console.group(barCode)
             axios.post(Config.api+"/api/Sale/Sale?barcode="+barCode,Config.headers).then(res=>{
+
                 if(res.data){
                     console.log(res.data)
                     fetchData(res.data.billSaleId);
@@ -84,8 +84,8 @@ function Sale () {
 
                     <div className="input-group mt-4">
                         <span className="input-group-text">Barcode</span>
-                        <input type="text" className="form-control" />
-                        <button className="btn btn-primary" onClick={handleSale}>
+                        <input onChange={e=>setBarCode(e.target.value)} type="text" className="form-control" />
+                        <button className="btn btn-primary" onClick={e=>handleSale(e.target.value)}>
                             <i className="fa fa-save"></i>
                         </button>
                     </div>
