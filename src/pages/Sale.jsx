@@ -3,6 +3,7 @@ import Template from "../components/Template";
 import axios from "axios";
 import Config from "../config";
 import Swal from "sweetalert2";
+import Modal from "../components/Modal";
 
 
 function Sale () {
@@ -11,6 +12,8 @@ function Sale () {
     const [barCode,setBarCode] = useState(1);
     const [totalPrice,setTotalPrice] = useState(0);
     const [billSaleId,setBillSaleId] = useState(0);
+    const [itemId,setItemId] = useState(0);
+    const [itemAmount,setItemAmount] = useState(0);
 
     useEffect(()=>{ fetchLastSale() },[])
     
@@ -105,6 +108,28 @@ function Sale () {
         })
         console.log(item)
     }
+
+    const handleUpdate = async (id,amount) => {
+        console.log(id,amount)
+        setItemAmount(amount);
+        setItemId(id);
+
+    }
+
+    const handleEditSave = async (e) => {
+        e.preventDefault();
+        const id = itemId;
+        const amount = itemAmount
+        await axios.put(Config.api+'/api/Sale/EditSale?id='+ id +'&amount=' + amount ,null ,Config.headers).then(res=>{
+            if(res.data.message === 'success'){
+                document.getElementById('btnClose').click();
+                fetchData(billSaleId);
+            }
+        }).catch(err=>{
+            throw err.response.data
+        })
+    }
+
     return (<>
         <Template>
             <div className="card">
@@ -148,9 +173,10 @@ function Sale () {
                                     <td>{item.amount}</td>
                                     <td>{(item.price * item.amount).toLocaleString('th-TH')}</td>
                                     <td>
-                                        <button data-toggle="modal" data-target="#modalForm" className="btn-warning mr-2" onClick={e=>saleDetail(item)}>
+                                        <button data-toggle="modal" data-target="#modalEditAmount"
+                                          className="btn-warning mr-2" onClick={e => handleUpdate( item.id, item.amount) }>
                                             {/* Edit */}
-                                            <i className="fa fa-pencil "></i>
+                                            <i className="fa fa-pencil" ></i>
                                         </button>
                                         <button className="btn-danger mr-2 " onClick={e => handleDelete(item)}>
                                             {/* Delete */}
@@ -169,6 +195,14 @@ function Sale () {
                 </div>
             </div>
         </Template>
+
+        <Modal title="Edit amount" id="modalEditAmount">
+            <div>
+                <label>Amount</label>
+                <input value={itemAmount} onChange={e => setItemAmount(e.target.value)} className="form-control" />
+                <button className="mt-3 tn btn-primary" onClick={handleEditSave}>Save</button>
+            </div>
+        </Modal>
     </>)
 }
 
