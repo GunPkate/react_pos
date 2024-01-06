@@ -6,21 +6,17 @@ import Swal from "sweetalert2";
 
 
 function Sale () {
-    const [saleDetails,setSaleDetail] = useState([]);
-    const [billSaleid,setBillSaleid] = useState(1);
+    const [saleDetails,setSaleDetails] = useState([])
     const [barCode,setBarCode] = useState(1);
 
-    useEffect(()=>{
-        fetchData();
-        fetchLastSale();
-    },[])
+    useEffect(()=>{ fetchLastSale() },[])
     
     const fetchLastSale = async () =>{
         try {
-            await axios.get(Config.api+"/api/Sale/LastSale/",Config.headers).then(res=>{
-                console.log(res)
-                if(res.status == '200'){
-                    // setSaleDetail(res.data)
+            await axios.get(Config.api+"/api/Sale/LastSale/",Config.headers).then( res=>{
+                // console.log(res)
+                if(res.data.billSaleId != 0){
+                    fetchData(res.data.billSaleId);
                 }
             }).catch(err=>{
                 throw err.response.data
@@ -35,13 +31,14 @@ function Sale () {
         }
     }
 
-    const fetchData = async() =>{
+    const fetchData = async(billSaleid) =>{
         try {
             await  axios.get(Config.api+"/api/Sale/SaleDetail/"+billSaleid,Config.headers).then(res=>{
-                if(res.status == '200'){
-                    setSaleDetail(res.data)
+                const data = res.data.result
+                    setSaleDetails(data)
                     console.log('set',saleDetails)
-                }
+
+
             }).catch(err=>{
                 throw err.response.data
             })
@@ -58,10 +55,11 @@ function Sale () {
     const handleSale = (e)=>{
         e.preventDefault();
         try {
+            let barCode = 0
             axios.post(Config.api+"/api/Sale/Sale?barcode="+barCode,Config.headers).then(res=>{
                 if(res.data){
                     console.log(res.data)
-                    setBillSaleid(res.data.billSaleId)
+                    fetchData(res.data.billSaleId);
                 }
             })
         } catch (error) {
@@ -105,15 +103,16 @@ function Sale () {
                         </thead>
                         <tbody>
                             {saleDetails.length>0?
-                            saleDetails.map(item=>{
-                                <tr>
-                                    <td>{item.id}</td>
+                            saleDetails.map((item,index)=>
+                                <tr key={item.id}>
+                                    <td>{index+1}</td>
+                                    <td >{item.id}</td>
                                     <td>{item.isbn}</td>
                                     <td>{item.name}</td>
                                     <td>{item.amount}</td>
                                     <td>{item.price}</td>
                                 </tr>
-                            })
+                            )
                             :
                             <tr>
                                 <td className="text-center" colSpan={6}>No Data</td>
