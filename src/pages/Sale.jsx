@@ -7,7 +7,9 @@ import Swal from "sweetalert2";
 
 function Sale () {
     const [saleDetails,setSaleDetails] = useState([])
+    const [saleDetail,setSaleDetail] = useState({})
     const [barCode,setBarCode] = useState(1);
+    const [totalPrice,setTotalPrice] = useState(0);
 
     useEffect(()=>{ fetchLastSale() },[])
     
@@ -36,6 +38,7 @@ function Sale () {
             await  axios.get(Config.api+"/api/Sale/SaleDetail/"+billSaleid,Config.headers).then(res=>{
                 const data = res.data.result
                     setSaleDetails(data)
+                    handlePrice();
                     console.log('set',saleDetails)
 
 
@@ -70,6 +73,17 @@ function Sale () {
             })
         }
     }
+
+    const handlePrice = () =>{
+        let sum = 0;
+        saleDetails.map(item=> sum += item.price* item.amount );
+        console.log('sum',sum);
+        setTotalPrice(sum);
+    }
+
+    const handleDelete = (item) =>{
+        console.log(item)
+    }
     return (<>
         <Template>
             <div className="card">
@@ -77,7 +91,7 @@ function Sale () {
                     <div className="text-right">
                         <span className="alert alert-secondary h2 bg-dark">
                             <b className="text-success">
-                                0.00
+                                {(totalPrice).toLocaleString('th-TH')}
                             </b>
                         </span>
                     </div>
@@ -93,24 +107,35 @@ function Sale () {
                     <table className="table table-bordered table-striped mt-3">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Barcode</th>
-                                <th>item</th>
-                                <th>price</th>
-                                <th>amount</th>
-                                <th>Total</th>
+                                <th className="col-1">#</th>
+                                <th className="col-1">Barcode</th>
+                                <th className="col-2">item</th>
+                                <th className="col-2">price</th>
+                                <th className="col-2">amount</th>
+                                <th className="col-2">Total</th>
+                                <th className="col-1"></th>
                             </tr>
                         </thead>
                         <tbody>
                             {saleDetails.length>0?
                             saleDetails.map((item,index)=>
                                 <tr key={item.id}>
-                                    <td>{index+1}</td>
                                     <td >{item.id}</td>
                                     <td>{item.isbn}</td>
                                     <td>{item.name}</td>
-                                    <td>{item.amount}</td>
                                     <td>{item.price}</td>
+                                    <td>{item.amount}</td>
+                                    <td>{item.price * item.amount}</td>
+                                    <td>
+                                        <button data-toggle="modal" data-target="#modalForm" className="btn-warning mr-2" onClick={e=>saleDetail(item)}>
+                                            {/* Edit */}
+                                            <i className="fa fa-pencil "></i>
+                                        </button>
+                                        <button className="btn-danger mr-2 " onClick={e => handleDelete(item)}>
+                                            {/* Delete */}
+                                            <i className="fa fa-times"></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             )
                             :
