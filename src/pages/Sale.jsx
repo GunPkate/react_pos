@@ -15,8 +15,10 @@ function Sale () {
     const fetchData = () =>{
         try {
             axios.get(Config.api+"/api/Sale/SaleDetail/"+billSaleid,Config.headers).then(res=>{
-                console.log(res.data)
-                setSaleDetail(res.data)
+                if(res.status == '200'){
+                    setSaleDetail(res.data)
+                    console.log('set',saleDetails)
+                }
             }).catch(err=>{
                 throw err.response.data
             })
@@ -31,7 +33,15 @@ function Sale () {
     }
 
     const handleSale = ()=>{
-
+        try {
+            
+        } catch (error) {
+            Swal.fire({
+                title: 'error',
+                text: error.message,
+                icon: 'error'
+            })
+        }
     }
     return (<>
         <Template>
@@ -54,7 +64,7 @@ function Sale () {
                     </div>
 
                     <table className="table table-bordered table-striped mt-3">
-                        <th>
+                        <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Barcode</th>
@@ -63,7 +73,24 @@ function Sale () {
                                 <th>amount</th>
                                 <th>Total</th>
                             </tr>
-                        </th>
+                        </thead>
+                        <tbody>
+                            {saleDetails.length>0?
+                            saleDetails.map(item=>{
+                                <tr>
+                                    <td>{item.id}</td>
+                                    <td>{item.isbn}</td>
+                                    <td>{item.name}</td>
+                                    <td>{item.amount}</td>
+                                    <td>{item.price}</td>
+                                </tr>
+                            })
+                            :
+                            <tr>
+                                <td className="text-center" colSpan={6}>No Data</td>
+                            </tr>
+                            }
+                        </tbody>
                     </table>
                 </div>
             </div>
