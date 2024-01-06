@@ -1,6 +1,38 @@
+import { useEffect, useState } from "react";
 import Template from "../components/Template";
+import axios from "axios";
+import Config from "../config";
+import Swal from "sweetalert2";
+
 
 function Sale () {
+
+
+    const [saleDetails,setSaleDetail] = useState([]);
+    const [billSaleid,setBillSaleid] = useState(1);
+
+    useEffect(()=>{fetchData()},[])
+    const fetchData = () =>{
+        try {
+            axios.get(Config.api+"/api/Sale/SaleDetail/"+billSaleid,Config.headers).then(res=>{
+                console.log(res.data)
+                setSaleDetail(res.data)
+            }).catch(err=>{
+                throw err.response.data
+            })
+            
+        } catch (error) {
+            Swal.fire({
+                title: 'error',
+                text: error.message,
+                icon: 'error'
+            })
+        }
+    }
+
+    const handleSale = ()=>{
+
+    }
     return (<>
         <Template>
             <div className="card">
