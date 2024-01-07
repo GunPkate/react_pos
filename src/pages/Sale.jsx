@@ -146,7 +146,8 @@ function Sale () {
                 if(res.isConfirmed)
                 await axios.delete(Config.api+'/api/Sale/ClearBill/'+billSaleId,Config.headers) .then(res=>{
                     if(res.data.message==='success'){
-                        fetchData(billSaleId)
+                        fetchData(billSaleId);
+                        resetData();
                     }
                 })
             })
@@ -165,6 +166,31 @@ function Sale () {
         setInputChange(data - totalPrice ) ;
     }
 
+    const handleConfirmPurchase = async (e) =>{
+        e.preventDefault();
+        try {
+            console.log("confirm Purchase",billSaleId)
+            await axios.put(Config.api+'/api/Sale/ConfirmBill/'+billSaleId,null,Config.headers).then(res =>{
+                if(res.data.message === 'success')
+                resetData()
+                // fetchData()
+            }).catch(err=>{
+                throw err
+            })
+        } catch (error) {
+            throw error
+        }
+
+    }
+
+    function resetData() {
+        setSaleDetails([]);
+        // setBillSaleId(0);
+        setTotalPrice(0);
+        setInputMoney('');
+        setInputChange(0);
+        document.getElementById('btnClose').click();
+    }
     return (<>
         <Template>
             <div className="card">
@@ -274,8 +300,8 @@ function Sale () {
                 <input  value={inputChange} className="form-control form-control-lg text-right" disabled/>
             </div>
             <div className="mt-3">
-                {inputChange >0 ? <>
-                    <button className="btn btn-success btn-lg">
+                {inputChange >=0 ? <>
+                    <button className="btn btn-success btn-lg" onClick={handleConfirmPurchase}>
                     <i className="fa fa-check">Paid</i>
                 </button>
 
