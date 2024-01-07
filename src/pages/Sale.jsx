@@ -130,6 +130,33 @@ function Sale () {
         })
     }
 
+    const clearSaleItem = async(e) =>{
+        e.preventDefault();
+        try {
+            Swal.fire({
+                title: '',
+                text: 'Clear all Items',
+                icon: 'question',
+                showConfirmButton: true,
+                showCancelButton: true
+            }).then(async res =>{
+                if(res.isConfirmed)
+                await axios.delete(Config.api+'/api/Sale/ClearBill/'+billSaleId,Config.headers) .then(res=>{
+                    if(res.data.message==='success'){
+                        fetchData(billSaleId)
+                    }
+                })
+            })
+        } catch (error) {
+            Swal.fire({
+                title: 'error',
+                text: error.message,
+                icon: 'error',
+            })
+        }
+
+    }
+
     return (<>
         <Template>
             <div className="card">
@@ -149,6 +176,27 @@ function Sale () {
                             <i className="fa fa-save"></i>
                         </button>
                     </div>
+
+                    <button className="btn btn-group"> 
+                        <button className="btn btn-success btn-lg">
+                            <i className="fa fa-check"></i> Confirm Purchase
+                        </button>
+                    </button>
+                    <button className="btn btn-group"> 
+                        <button className="btn btn-info btn-lg">
+                            <i className="fa fa-list-alt"></i> Sale History
+                        </button>
+                    </button>
+                    <button className="btn btn-group"> 
+                        <button className="btn btn-primary btn-lg">
+                            <i className="fa fa-file"></i> Latest Bill
+                        </button>
+                    </button>
+                    <button className="btn btn-group"> 
+                        <button className="btn btn-danger btn-lg" onClick={clearSaleItem}>
+                            <i className="fa fa-times"></i> Clear All Item
+                        </button>
+                    </button>
 
                     <table className="table table-bordered table-striped mt-3">
                         <thead>
