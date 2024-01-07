@@ -15,6 +15,9 @@ function Sale () {
     const [itemId,setItemId] = useState(0);
     const [itemAmount,setItemAmount] = useState(0);
 
+    const [inputMoney,setInputMoney] = useState(0);
+    const [inputChange,setInputChange] = useState(0);
+
     useEffect(()=>{ fetchLastSale() },[])
     
     const fetchLastSale = async () =>{
@@ -157,6 +160,11 @@ function Sale () {
 
     }
 
+    const computeChange = (data) =>{
+        setInputMoney(data);
+        setInputChange(data - totalPrice ) ;
+    }
+
     return (<>
         <Template>
             <div className="card">
@@ -178,7 +186,7 @@ function Sale () {
                     </div>
 
                     <button className="btn btn-group"> 
-                        <button className="btn btn-success btn-lg">
+                        <button data-toggle="modal" data-target="#modalConfirmPurchase" className="btn btn-success btn-lg">
                             <i className="fa fa-check"></i> Confirm Purchase
                         </button>
                     </button>
@@ -249,6 +257,36 @@ function Sale () {
                 <label>Amount</label>
                 <input value={itemAmount} onChange={e => setItemAmount(e.target.value)} className="form-control" />
                 <button className="mt-3 tn btn-primary" onClick={handleEditSave}>Save</button>
+            </div>
+        </Modal>
+
+        <Modal title="Confirm Purchase" id="modalConfirmPurchase">
+            <div>
+                <label>Total price</label>
+                <input value={totalPrice} className="form-control form-control-lg text-right" disabled/>
+            </div>
+            <div>
+                <label>Payment</label>
+                <input  onChange={e=>computeChange(e.target.value)} className="form-control form-control-lg text-right" />
+            </div>
+            <div>
+                <label>Change</label>
+                <input  value={inputChange} className="form-control form-control-lg text-right" disabled/>
+            </div>
+            <div className="mt-3">
+                {inputChange >0 ? <>
+                    <button className="btn btn-success btn-lg">
+                    <i className="fa fa-check">Paid</i>
+                </button>
+
+                <button className="btn btn-primary ml-3 btn-lg">
+                    <i className="fa fa-check">Paid no Change</i>
+                </button>
+                </> : 
+                <div>
+                </div>
+                }
+
             </div>
         </Modal>
     </>)
