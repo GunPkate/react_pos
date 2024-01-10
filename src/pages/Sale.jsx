@@ -171,9 +171,14 @@ function Sale () {
         try {
             console.log("confirm Purchase",billSaleId)
             await axios.put(Config.api+'/api/Sale/ConfirmBill/'+billSaleId,null,Config.headers).then(res =>{
-                if(res.data.message === 'success')
-                resetData()
-                // fetchData()
+                if(res.data.message === 'success'){
+                    Swal.fire({
+                        title: 'Confirm Success',
+                        text : 'Confirm Success',
+                        icon: 'success'
+                    })
+                    resetData();
+                }
             }).catch(err=>{
                 throw err
             })
@@ -185,11 +190,10 @@ function Sale () {
 
     function resetData() {
         setSaleDetails([]);
-        // setBillSaleId(0);
+        setBillSaleId(0);
         setTotalPrice(0);
         setInputMoney('');
         setInputChange(0);
-        document.getElementById('btnClose').click();
     }
     return (<>
         <Template>
@@ -301,7 +305,7 @@ function Sale () {
             </div>
             <div className="mt-3">
                 {inputChange >=0 ? <>
-                    <button className="btn btn-success btn-lg" onClick={handleConfirmPurchase}>
+                    <button className="btn btn-success btn-lg" onClick={handleConfirmPurchase} data-dismiss="modal">
                     <i className="fa fa-check">Paid</i>
                 </button>
 
