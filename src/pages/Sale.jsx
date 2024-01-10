@@ -183,7 +183,11 @@ function Sale () {
                 throw err
             })
         } catch (error) {
-            throw error
+            Swal.fire({
+                title: 'error',
+                text: error.message,
+                icon: 'error',
+            })
         }
 
     }
@@ -194,6 +198,27 @@ function Sale () {
         setTotalPrice(0);
         setInputMoney('');
         setInputChange(0);
+    }
+
+    const [lastBillId,setLastBillId] = useState();
+    const [lastBill,setLastBill] = useState([]);
+
+    const handleViewLastBill = async (e) =>{
+        try {
+            e.preventDefault();
+            await axios.get(Config.api+'/api/Sale/viewLastBill?billSaleId='+billSaleId,Config.headers).then(res=>{
+                console.log(res)
+                setLastBill(res.data.result)
+            }).catch(err=>{
+                throw err.response
+            })
+        } catch (error) {
+            Swal.fire({
+                title: 'error',
+                text: error.message,
+                icon: 'error',
+            })
+        }
     }
     return (<>
         <Template>
@@ -226,7 +251,8 @@ function Sale () {
                         </button>
                     </button>
                     <button className="btn btn-group"> 
-                        <button className="btn btn-primary btn-lg">
+                        <button className="btn btn-primary btn-lg" data-toggle="modal" data-target="#modalViewLastBill"
+                        onClick={handleViewLastBill}>
                             <i className="fa fa-file"></i> Latest Bill
                         </button>
                     </button>
@@ -318,6 +344,40 @@ function Sale () {
                 }
 
             </div>
+        </Modal>
+
+        <Modal title="View Last Bill" id="modalViewLastBill" modalSize="modal-lg">
+                
+        <table className="table table-bordered table-striped mt-3">
+                        <thead>
+                            <tr className="bg-dark">
+                                <th className="col-1">#</th>
+                                <th className="col-1">Barcode</th>
+                                <th className="col-2">item</th>
+                                <th className="col-2">price</th>
+                                <th className="col-2">amount</th>
+                                <th className="col-2">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {lastBill.length>0?
+                            lastBill.map((item,index)=>
+                                <tr key={item.id}>
+                                    <td >{item.id}</td>
+                                    <td>{item.isbn}</td>
+                                    <td>{item.name}</td>
+                                    <td className="text-right">{item.price.toLocaleString('th-TH')}</td>
+                                    <td className="text-right">{item.amount}</td>
+                                    <td className="text-right">{(item.price * item.amount).toLocaleString('th-TH')}</td>
+                                </tr>
+                            )
+                            :
+                            <tr>
+                                <td className="text-center" colSpan={6}>No Data</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
         </Modal>
     </>)
 }
