@@ -4,6 +4,7 @@ import axios from "axios";
 import Config from "../config";
 import Swal from "sweetalert2";
 import Modal from "../components/Modal";
+import * as dayjs from "dayjs"
 
 
 function Sale () {
@@ -220,6 +221,24 @@ function Sale () {
             })
         }
     }
+
+    const [saleHistory,setSaleHistory] = useState([]);
+    const handleSaleHistory = () =>{
+        try {
+            axios.get(Config.api+"/api/Sale/saleHistory",Config.headers).then(res=>{
+                console.log(res.data.result)
+                setSaleHistory(res.data.result)
+            }).catch(err=>{
+                throw err.response.data
+            })
+        }  catch (error) {
+            Swal.fire({
+                title: 'error',
+                text: error.message,
+                icon: 'error',
+            })
+        }
+    }
     return (<>
         <Template>
             <div className="card">
@@ -245,7 +264,7 @@ function Sale () {
                             <i className="fa fa-check"></i> Confirm Purchase
                         </button>
                     </button>
-                    <button className="btn btn-group"> 
+                    <button className="btn btn-group" onClick={handleSaleHistory} data-toggle="modal" data-target="#modalHistory"> 
                         <button className="btn btn-info btn-lg">
                             <i className="fa fa-list-alt"></i> Sale History
                         </button>
@@ -378,6 +397,45 @@ function Sale () {
                             }
                         </tbody>
                     </table>
+        </Modal>
+
+        <Modal title="Sale History" id="modalHistory" modalSize="modal-lg">  
+            <table>
+                <thead>
+                    <tr className="bg-dark text-center">
+                        <th style={{width : "8%"}}>#</th>
+                        <th style={{width : "10%"}}>Barcode</th>
+                        <th style={{width : "15%"}}>item</th>
+                        <th style={{width : "7%"}}>Bill ID</th>
+                        <th style={{width : "10%"}}>price</th>
+                        <th style={{width : "10%"}}>amount</th>
+                        <th style={{width : "15%"}}>Total</th>
+                        <th style={{width : "15%"}}>Date</th>
+                        <th style={{width : "10%"}}>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {saleHistory.length>0?
+                    saleHistory.map((item)=>
+                        <tr key={item.id}>
+                            <td >{item.id}</td>
+                            <td>{item.isbn}</td>
+                            <td>{item.name}</td>
+                            <td>{item.billSaleId}</td>
+                            <td className="text-right">{item.price.toLocaleString('th-TH')}</td>
+                            <td className="text-right">{item.amount}</td>
+                            <td className="text-right">{(item.price * item.amount).toLocaleString('th-TH')}</td>
+                            <td className="text-right">{dayjs(item.payAt).format("DD/MM/YYYY")}</td>
+                            <td className="text-right">{dayjs(item.payAt).format("HH:mm")}</td>
+                        </tr>
+                    )
+                    :
+                    <tr>
+                        <td className="text-center" colSpan={6}>No Data</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
         </Modal>
     </>)
 }

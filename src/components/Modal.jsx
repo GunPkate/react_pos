@@ -3,7 +3,6 @@ function Modal(props){
     let modalSize = 'modal-dialog modal-dialog-centered ';
     if(props.modalSize){
         modalSize += ' ' + props.modalSize;
-        console.log(modalSize)
     }
     return(<>
 
