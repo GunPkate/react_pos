@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import Product from './pages/Product';
 import UserProfile from './pages/userProfile';
 import Sale from './pages/Sale';
+import BillReport from './pages/BillReport';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -28,6 +29,9 @@ const router = createBrowserRouter([
 },{
   path: "/sale",
   element: <Sale/>
+},{
+  path: "/billreport",
+  element: <BillReport/>
 }
 ]) 
 root.render(

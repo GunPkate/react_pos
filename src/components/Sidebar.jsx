@@ -70,7 +70,34 @@ function Sidebar(){
             <Link to="/home" className="nav-link">
               <i className="nav-icon fa fa-home"></i>
               <p>
-                Home
+                Dashboard
+              </p>
+            </Link>
+          </li>
+          
+          <li className="nav-item">
+            <Link to="/billreport" className="nav-link">
+              <i className="nav-icon fa fa-list-alt"></i>
+              <p>
+                Bill Report
+              </p>
+            </Link>
+          </li>
+
+          <li className="nav-item">
+            <Link to="/home" className="nav-link">
+              <i className="nav-icon fa fa-list"></i>
+              <p>
+                Daily Sale Report
+              </p>
+            </Link>
+          </li>
+
+          <li className="nav-item">
+            <Link to="/home" className="nav-link">
+              <i className="nav-icon fa fa-file-alt"></i>
+              <p>
+                Monthly Sale Report
               </p>
             </Link>
           </li>
