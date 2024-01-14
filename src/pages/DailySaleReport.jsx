@@ -1,30 +1,33 @@
 import { useEffect, useState } from "react"
 import Template from "../components/Template"
-
+import axios from "axios"
+import Config from "../config"
+import Swal from "sweetalert2"
 
 export default function DailySaleReport(){
 
-    const [BillReport,setBillReport] = useState([])
+    const [dailySale,setDailySale] = useState([])
     const [yearInput,setYearInput] = useState()
     const [yearList,setYearsList] = useState([])
     const [monthInput,setMonthInput] = useState()
     
     const months =  [ 
-                        {value:'January'}, { value:'February'}, { value:'March'}, { value:'April' }, 
-                        {value:'May'}, { value:'June'}, { value:'July'}, { value:'August' }, 
-                        {value:'September'},  { value:'October'}, {  value:'November'}, { value:'December' }
+                        {value: '01', month:'January'}, { value: '02', month:'February'}, { value: '03', month:'March'}, { value: '04', month:'April' }, 
+                        {value: '05', month:'May'}, { value: '06', month:'June'}, { value: '07', month:'July'}, { value: '08', month:'August' }, 
+                        {value: '09', month:'September'},  { value: '10', month:'October'}, {  value: '11', month:'November'}, { value: '12', month:'December' }
                     ]
     
     useEffect(()=>{DefaultData()},[]);
 
     let yearsTemp = []
-    const DefaultData = () =>{
+    const DefaultData = async() =>{
         let currentDate = new Date();
         let thisYear = currentDate.getFullYear();
-
+        let thisMonth = (currentDate.getMonth()+1);
+        thisMonth > 10 ? thisMonth += '': thisMonth = '0' + thisMonth;
         setYearInput(thisYear);
-        setMonthInput(currentDate.getMonth()+1)
-
+        setMonthInput(thisMonth)
+        getDailySale(Number(thisYear),Number(thisMonth));
         let defaultYear = thisYear -3
         for(let i = thisYear; thisYear >= defaultYear; thisYear--){
             let year = {value: thisYear}
@@ -32,20 +35,45 @@ export default function DailySaleReport(){
         }
         setYearsList(yearsTemp)
 
+
+    }
+
+    const getDailySale = async (y,m) =>{
+        try {
+            
+            await axios.post(Config.api+"/api/Report/DailySaleReport/"+y+"/"+m,Config.headers).then(res=>{
+
+                let data = []
+                res.data.filter(data=>data.sum).length > 0 ? data = res.data : data = res.data.filter(data=>data.sum)
+
+                console.log(JSON.stringify(data))
+                setDailySale(data)
+            }).catch(err =>{
+                throw err.response.data;
+            })
+        }
+        catch (e) {
+            Swal.fire({
+                title: 'error',
+                message: e.message,
+                icon: 'error'
+            })
+        }
     }
 
     const handleChangeYear = (data) => {
         setYearInput(data)
-        console.log(data)
+        // console.log(data)
     }
 
     const handleChangeMonth = (data) => {
-        setYearInput(data)
-        console.log(data)
+        setMonthInput(data)
+        // console.log(data)
     }
 
     const handleDailySaleReport = (e) =>{
         e.preventDefault();
+        getDailySale(yearInput,Number(monthInput))
         console.log(monthInput,yearInput)
     }
 
@@ -65,7 +93,7 @@ export default function DailySaleReport(){
                                     onChange={e=>handleChangeYear(e.target.value)}
                                     >
                                         { 
-                                            yearList.map(year=> <option value={year.value}>{year.value}</option>)
+                                            yearList.map(item=> <option value={item.value}>{item.value}</option>)
                                         }
                                     </select>
                                 </div>
@@ -77,7 +105,7 @@ export default function DailySaleReport(){
                                     onChange={e=>handleChangeMonth(e.target.value)}
                                     >
                                         { 
-                                            months.map(month=> <option value={month.value}>{month.value}</option>)
+                                            months.map(item=> <option value={item.value}>{item.month}</option>)
                                         }
                                     </select>
                                 </div>
@@ -95,29 +123,26 @@ export default function DailySaleReport(){
                 <table className="table table-bordered table-stiped mt-2">
                     <thead>
                         <tr>
-                            <th className="col-2"></th>
-                            <th className="col-1">#</th>
-                            <th className="col-1">Bill ID</th>
-                            <th className="col-6">Date</th>
+                            <th className="col-1">Day</th>
+                            <th className="col-6">Total Cash</th>
 
                         </tr>
                     </thead>
                     <tbody>{
-                        BillReport.length > 0 ?
-                        BillReport.map((item,index) =>
+                        dailySale.length > 0 && dailySale.filter(data=>data.sum > 0)?
+                        dailySale.map((item,index) =>
                         <>
                             <tr key={item.id}>
-                                <td className="text-center">
+                                {/* <td className="text-center">
                                     <button className="btn btn-info btn-lg" 
                                     data-toggle="modal" data-target="#modalViewBill" 
 
                                     >
                                         Bill Detail
                                     </button>
-                                </td>
-                                <td>{index+1}</td>
-                                <td>{item.id}</td>
-                                <td>{item.payAt}</td>
+                                </td> */}
+                                <td>{item.day}</td>
+                                <td>{item.sum}</td>
                             </tr>
 
                         </> ) : 
