@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import Template from "../components/Template"
 import Config from "../config";
 import axios from "axios";
+import Swal from "sweetalert2";
+import Modal from "../components/Modal";
 
 function BillReport(){
     const [fromDate,setFromDate] = useState();
     const [toDate,setToDate] = useState();
     const [BillReport,setBillReport] = useState([]);
+    const [lastBill,setLastBill] = useState([]);
 
     useEffect( () => {fetchData()} ,[])
 
@@ -51,6 +54,28 @@ function BillReport(){
         }).catch(err => {
             throw err.response.data
         })
+    }
+
+    const handleBillDetail = async (billSaleId) => {
+        console.log(billSaleId)
+        try {
+            await axios.get(Config.api + "/api/Sale/SaleDetail/" + billSaleId, Config.headers).then(res => {
+                const data = res.data.result
+                console.log('set', data)
+                setLastBill(data)
+
+
+            }).catch(err => {
+                throw err.response.data
+            })
+
+        } catch (error) {
+            Swal.fire({
+                title: 'error',
+                text: error.message,
+                icon: 'error'
+            })
+        }
     }
     
     return <>
@@ -97,9 +122,13 @@ function BillReport(){
                     BillReport.length > 0 ?
                     BillReport.map((item,index) =>
                     <>
-                        <tr>
+                        <tr key={item.id}>
                             <td className="text-center">
-                                <button className="btn btn-info btn-lg">Bill Detail</button>
+                                <button className="btn btn-info btn-lg" 
+                                data-toggle="modal" data-target="#modalViewBill" 
+                                onClick={e=>handleBillDetail(item.id)}>
+                                    Bill Detail
+                                </button>
                             </td>
                             <td>{index+1}</td>
                             <td>{item.id}</td>
@@ -116,6 +145,40 @@ function BillReport(){
         
             </table>
         </Template>
+
+        <Modal title="View Bill" id="modalViewBill" modalSize="modal-lg">
+
+        <table className="table table-bordered table-striped mt-3">
+            <thead>
+                <tr className="bg-dark">
+                    <th className="col-1">#</th>
+                    <th className="col-1">Barcode</th>
+                    <th className="col-2">item</th>
+                    <th className="col-2">price</th>
+                    <th className="col-2">amount</th>
+                    <th className="col-2">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {lastBill.length > 0 ?
+                    lastBill.map((item, index) =>
+                        <tr key={item.id}>
+                            <td >{item.id}</td>
+                            <td>{item.isbn}</td>
+                            <td>{item.name}</td>
+                            <td className="text-right">{item.price.toLocaleString('th-TH')}</td>
+                            <td className="text-right">{item.amount}</td>
+                            <td className="text-right">{(item.price * item.amount).toLocaleString('th-TH')}</td>
+                        </tr>
+                    )
+                    :
+                    <tr>
+                        <td className="text-center" colSpan={6}>No Data</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        </Modal>
     </>
 }
 
