@@ -10,6 +10,7 @@ function BillReport(){
     const [toDate,setToDate] = useState();
     const [BillReport,setBillReport] = useState([]);
     const [lastBill,setLastBill] = useState([]);
+    const [totalPrice,setTotalPrice] = useState(0);
 
     useEffect( () => {fetchData()} ,[])
 
@@ -61,9 +62,11 @@ function BillReport(){
         try {
             await axios.get(Config.api + "/api/Sale/SaleDetail/" + billSaleId, Config.headers).then(res => {
                 const data = res.data.result
-                console.log('set', data)
+                let sum = 0;
+                data.forEach(x=>sum += (x.price*x.amount))
+                // console.log('set', sum)
                 setLastBill(data)
-
+                setTotalPrice(sum)
 
             }).catch(err => {
                 throw err.response.data
@@ -176,6 +179,10 @@ function BillReport(){
                         <td className="text-center" colSpan={6}>No Data</td>
                     </tr>
                 }
+                <tr>
+                    <td className="text-center" colspan="5"> Total Price </td>
+                    <td className="text-right" >{totalPrice}</td>
+                </tr>
             </tbody>
         </table>
         </Modal>
