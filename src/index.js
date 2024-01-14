@@ -10,6 +10,7 @@ import Product from './pages/Product';
 import UserProfile from './pages/userProfile';
 import Sale from './pages/Sale';
 import BillReport from './pages/BillReport';
+import DailySaleReport from './pages/DailySaleReport';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -32,6 +33,9 @@ const router = createBrowserRouter([
 },{
   path: "/billreport",
   element: <BillReport/>
+},{
+  path: "/dailysalereport",
+  element: <DailySaleReport/>
 }
 ]) 
 root.render(

@@ -85,7 +85,7 @@ function Sidebar(){
           </li>
 
           <li className="nav-item">
-            <Link to="/home" className="nav-link">
+            <Link to="/dailysalereport" className="nav-link">
               <i className="nav-icon fa fa-list"></i>
               <p>
                 Daily Sale Report
