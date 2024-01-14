@@ -34,7 +34,7 @@ function BillReport(){
         }
         await axios.post(Config.api+'/api/Report/BillReport',dateBody,Config.headers).then(res=>{
             console.log(res)
-            // setBillReport(res)
+            setBillReport(res.data)
         }).catch(err => {
             throw err.response.data
         })
@@ -83,6 +83,31 @@ function BillReport(){
                     </div>
                 </div>
             </div>
+            <table className="table table-bordered table-stiped mt-2">
+                <thead>
+                    <tr>
+                        <th className="col-2"></th>
+                        <th className="col-1">#</th>
+                        <th className="col-1">Bill ID</th>
+                        <th className="col-6">Date</th>
+
+                    </tr>
+                </thead>
+                <tbody>{BillReport.map((item,index) =>
+                    <>
+                        <tr>
+                            <td className="text-center">
+                                <button className="btn btn-info btn-lg">Bill Detail</button>
+                            </td>
+                            <td>{index+1}</td>
+                            <td>{item.id}</td>
+                            <td>{item.payAt}</td>
+                        </tr>
+
+                    </>
+                )}</tbody>
+        
+            </table>
         </Template>
     </>
 }
