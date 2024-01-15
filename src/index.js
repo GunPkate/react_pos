@@ -11,6 +11,7 @@ import UserProfile from './pages/userProfile';
 import Sale from './pages/Sale';
 import BillReport from './pages/BillReport';
 import DailySaleReport from './pages/DailySaleReport';
+import MonthlySaleReport from './pages/MonthlySaleReport';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -36,6 +37,9 @@ const router = createBrowserRouter([
 },{
   path: "/dailysalereport",
   element: <DailySaleReport/>
+},{
+  path: "/monthlysalereport",
+  element: <MonthlySaleReport/>
 }
 ]) 
 root.render(

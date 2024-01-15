@@ -4,30 +4,27 @@ import axios from "axios"
 import Config from "../config"
 import Swal from "sweetalert2"
 
-export default function DailySaleReport(){
+export default function MonthlySaleReport(){
 
     const [dailySale,setDailySale] = useState([])
     const [yearInput,setYearInput] = useState()
     const [yearList,setYearsList] = useState([])
-    const [monthInput,setMonthInput] = useState()
-    
-    const months =  [ 
-                        {value: '01', month:'January'}, { value: '02', month:'February'}, { value: '03', month:'March'}, { value: '04', month:'April' }, 
-                        {value: '05', month:'May'}, { value: '06', month:'June'}, { value: '07', month:'July'}, { value: '08', month:'August' }, 
-                        {value: '09', month:'September'},  { value: '10', month:'October'}, {  value: '11', month:'November'}, { value: '12', month:'December' }
-                    ]
     
     useEffect(()=>{DefaultData()},[]);
 
+    const months =  [ 
+        'January', 'February', 'March', 'April' , 
+        'May', 'June', 'July', 'August' , 
+        'September',  'October', 'November', 'December' 
+    ]
+    
     let yearsTemp = []
     const DefaultData = async() =>{
         let currentDate = new Date();
         let thisYear = currentDate.getFullYear();
-        let thisMonth = (currentDate.getMonth()+1);
-        thisMonth > 10 ? thisMonth += '': thisMonth = '0' + thisMonth;
+
         setYearInput(thisYear);
-        setMonthInput(thisMonth)
-        getDailySale(Number(thisYear),Number(thisMonth));
+        getDailySale(Number(thisYear));
         let defaultYear = thisYear -3
         for(let i = thisYear; thisYear >= defaultYear; thisYear--){
             let year = {value: thisYear}
@@ -38,10 +35,10 @@ export default function DailySaleReport(){
 
     }
 
-    const getDailySale = async (y,m) =>{
+    const getDailySale = async (y) =>{
         try {
             
-            await axios.post(Config.api+"/api/Report/DailySaleReport/"+y+"/"+m,null,Config.headers).then(res=>{
+            await axios.get(Config.api+"/api/Report/MonthlySaleReport/"+y,null,Config.headers).then(res=>{
 
                 let data = []
                 res.data.filter(data=>data.sum).length > 0 ? data = res.data : data = res.data.filter(data=>data.sum)
@@ -66,15 +63,10 @@ export default function DailySaleReport(){
         // console.log(data)
     }
 
-    const handleChangeMonth = (data) => {
-        setMonthInput(data)
-        // console.log(data)
-    }
-
     const handleDailySaleReport = (e) =>{
         e.preventDefault();
-        getDailySale(yearInput,Number(monthInput))
-        console.log(monthInput,yearInput)
+        getDailySale(yearInput)
+        console.log(yearInput)
     }
 
     return (
@@ -100,14 +92,7 @@ export default function DailySaleReport(){
                             </div>
                             <div className="col-4">
                                 <div className="input-group">
-                                    <span className="input-group-text">Month</span>
-                                    <select className="form-control" value={monthInput} 
-                                    onChange={e=>handleChangeMonth(e.target.value)}
-                                    >
-                                        { 
-                                            months.map(item=> <option value={item.value}>{item.month}</option>)
-                                        }
-                                    </select>
+
                                 </div>
                             </div>
                             <div className="col-4">
@@ -123,7 +108,7 @@ export default function DailySaleReport(){
                 <table className="table table-bordered table-stiped mt-2">
                     <thead>
                         <tr>
-                            <th className="col-1">Day</th>
+                            <th className="col-1">Month</th>
                             <th className="col-6">Total Cash</th>
 
                         </tr>
@@ -141,7 +126,7 @@ export default function DailySaleReport(){
                                         Bill Detail
                                     </button>
                                 </td> */}
-                                <td>{item.day}</td>
+                                <td>{months[item.month-1]}</td>
                                 <td>{item.sum}</td>
                             </tr>
 

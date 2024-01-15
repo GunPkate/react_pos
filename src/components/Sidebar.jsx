@@ -94,7 +94,7 @@ function Sidebar(){
           </li>
 
           <li className="nav-item">
-            <Link to="/home" className="nav-link">
+            <Link to="/monthlysalereport" className="nav-link">
               <i className="nav-icon fa fa-file-alt"></i>
               <p>
                 Monthly Sale Report
